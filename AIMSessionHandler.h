@@ -55,6 +55,8 @@
 
 - (BOOL)connectToBART;
 
+- (BOOL)retrieveOfflineMessages;
+
 - (void)handleNickDeparted:(ANNickWInfo *)nickInfo;
 - (void)handleNickArrived:(ANNickWInfo *)nickInfo;
 

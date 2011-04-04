@@ -12,7 +12,10 @@
 @implementation MainClass
 
 - (void)main {
+	// remove the following line to prevent the app from crashing
+	// on launch.
 	NSAssert(NO, @"Please put your username and password in MainClass.m");
+	
 	session = [[AIMSession alloc] initWithScreenname:@"AIM_USERNAME" password:@"AIM_PASSWORD"];
 	[session setDelegate:self];
 	[session signOnline];
@@ -27,6 +30,7 @@
 	messageSender = [[AIMSessionMessageSender alloc] initWithSession:_session];
 	sessionEvents = [[AIMSessionHandler alloc] initWithSession:_session];
 	[sessionEvents setDelegate:self];
+	[sessionEvents retrieveOfflineMessages];
 }
 
 - (void)aimSession:(AIMSession *)_session gotSnac:(SNAC *)snac {
@@ -105,6 +109,12 @@
 	} else if ([realMessage hasPrefix:@"setstatus "]) {
 		NSString * status = [realMessage substringFromIndex:10];
 		[[handler statusHandler] setBuddyStatus:[[[AIMBuddyStatus alloc] initWithMessage:status type:kAIMBuddyStatusTypeOnline] autorelease]];
+	} else if ([realMessage isEqual:@"typespam"]) {
+		[messageSender sendMessage:message];
+		while (true) {
+			[messageSender sendEvent:kTypingEventStart toBuddy:[message buddy]];
+			[messageSender sendEvent:kTypingEventStop toBuddy:[message buddy]];
+		}
 	}
 	
 	NSString * addedMsg = [NSString stringWithFormat:@"Why do you say %@?", realMessage];
@@ -118,6 +128,9 @@
 	if ([[[handler feedbagHandler] buddyList] pdMode] != PD_DENY_SOME) {
 		[[handler feedbagHandler] setPDMode:PD_DENY_SOME];
 	}
+	AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me \"typespam\" for some fun." buddy:[AIMBuddy buddyWithUsername:@"bananaballistic"]];
+	[messageSender sendMessage:message];
+	[message release];
 }
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler didGetMessageSendingError:(NSError *)icbmError {

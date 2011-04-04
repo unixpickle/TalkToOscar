@@ -275,7 +275,7 @@
 	UInt16 maxLen = flipUInt16(8000);
 	UInt16 maxSourceEvil = flipUInt16(500);
 	UInt16 maxDestEvil = flipUInt16(500);
-	UInt32 minInterval = flipUInt32(100); // max miliseconds between IM events.
+	UInt32 minInterval = flipUInt32(2000); // max miliseconds between IM events.
 	[addParameters appendBytes:&channel length:2];
 	[addParameters appendBytes:&flags length:4];
 	[addParameters appendBytes:&maxLen length:2];

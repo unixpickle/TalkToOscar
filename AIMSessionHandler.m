@@ -18,7 +18,7 @@
 @synthesize session;
 
 - (id)initWithSession:(AIMSession *)_session {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		session = [_session retain];
 		feedbagHandler = [[AIMSessionFeedbagHandler alloc] initWithSession:session];
 		statusHandler = [[AIMStatusMessageHandler alloc] initWithEventHandler:self];
@@ -32,6 +32,17 @@
 	buddyArt = [[AIMBuddyArt alloc] init];
 	[buddyArt setDelegate:self];
 	bartRequestID = [buddyArt connectToBArt:session];
+	return YES;
+}
+
+- (BOOL)retrieveOfflineMessages {
+	SNAC * requestSnac = [[SNAC alloc] initWithID:SNAC_ID_NEW(SNAC_ICBM, ICBM__OFFLINE_RETRIEVE)
+											flags:0 requestID:[AIMSession randomRequestID] data:nil];
+	if (![session sendRegularSnac:requestSnac]) {
+		[requestSnac release];
+		return NO;
+	}
+	[requestSnac release];
 	return YES;
 }
 

@@ -416,7 +416,7 @@
 - (NSMutableArray *)buddyOperationsForRemoveDeny:(NSString *)denyUsername {
 	AIMFeedbagItem * removeDeny = nil;
 	for (AIMFeedbagItem * item in feedbag.items) {
-		if ([item classID] == FEEDBAG_DENY) {
+		if ([item classID] == FEEDBAG_DENY && [[item itemName] isEqual:denyUsername]) {
 			removeDeny = item;
 			break;
 		}
@@ -437,7 +437,7 @@
 - (NSMutableArray *)buddyOperationsForAddDeny:(NSString *)denyUsername {
 	AIMFeedbagItem * denyExisting = nil;
 	for (AIMFeedbagItem * item in feedbag.items) {
-		if ([item classID] == FEEDBAG_DENY) {
+		if ([item classID] == FEEDBAG_DENY && [[item itemName] isEqual:denyUsername]) {
 			denyExisting = item;
 			break;
 		}

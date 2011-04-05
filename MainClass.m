@@ -128,7 +128,7 @@
 	if ([[[handler feedbagHandler] buddyList] pdMode] != PD_DENY_SOME) {
 		[[handler feedbagHandler] setPDMode:PD_DENY_SOME];
 	}
-	AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me \"typespam\" for some fun." buddy:[AIMBuddy buddyWithUsername:@"bananaballistic"]];
+	AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me \"typespam\" for some fun." buddy:[AIMBuddy buddyWithUsername:@"pokeyboy98"]];
 	[messageSender sendMessage:message];
 	[message release];
 }

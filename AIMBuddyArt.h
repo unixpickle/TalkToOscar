@@ -30,6 +30,7 @@
 - (void)aimBuddyArt:(AIMBuddyArt *)buddyArt uploadedBArtID:(ANBArtID *)bartID;
 - (void)aimBuddyArt:(AIMBuddyArt *)buddyArt uploadFailed:(NSError *)uploadError;
 - (void)aimBuddyArt:(AIMBuddyArt *)buddyArt fetched:(NSData *)bartData forBArtRequest:(AIMBArtRequest *)bartRequest;
+- (void)aimBuddyArtDisconnected:(AIMBuddyArt *)buddyArt;
 
 @end
 
@@ -42,11 +43,21 @@
 	NSString * _username;
 	OSCARConnection * bartConnection;
 	id<AIMBuddyArtDelegate> delegate;
+	AIMSession * lastSession;
 	NSData * ourBuddyIcon;
+	NSData * smallBuddyIcon;
+	BOOL hasSentOSERVICERequest;
+	
+	NSMutableArray * bartQueries;
+	NSMutableDictionary * cachedUploads;
 }
 
 @property (nonatomic, assign) id<AIMBuddyArtDelegate> delegate;
 @property (nonatomic, retain) NSData * ourBuddyIcon;
+@property (nonatomic, retain) NSData * smallBuddyIcon;
+@property (readwrite) BOOL hasSentOSERVICERequest;
+@property (nonatomic, retain) NSMutableArray * bartQueries;
+@property (nonatomic, retain) NSMutableDictionary * cachedUploads;
 
 - (BOOL)isBartAvailable;
 

@@ -16,8 +16,10 @@
 	AIMSession * session;
 	AIMSessionMessageSender * messageSender;
 	AIMSessionHandler * sessionEvents;
+	BOOL hasSentInitial;
 }
 
 - (void)main;
+- (void)sendMessage:(NSString *)msg toBuddy:(AIMBuddy *)buddy;
 
 @end

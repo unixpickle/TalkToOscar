@@ -13,6 +13,10 @@
 
 @synthesize delegate;
 @synthesize ourBuddyIcon;
+@synthesize smallBuddyIcon;
+@synthesize hasSentOSERVICERequest;
+@synthesize bartQueries;
+@synthesize cachedUploads;
 
 - (BOOL)isBartAvailable {
 	if (bartConnection || bartHost) return YES;
@@ -35,10 +39,12 @@
 	
 	UInt32 requestID = [oserviceRequest requestID];
 	[oserviceRequest release];
+	hasSentOSERVICERequest = YES;
 	return requestID;
 }
 
 - (BOOL)gotOserviceResponse:(SNAC *)bartInfo {
+	hasSentOSERVICERequest = NO;
 	NSArray * tags = [TLV decodeTLVArray:[bartInfo innerContents]];
 	for (TLV * responseTag in tags) {
 		if ([responseTag type] == TLV_RECONNECT_HERE) {
@@ -103,6 +109,23 @@
 	
 	[bartConnection setIsNonBlocking:YES];
 	
+	// go through cached uploads and requests,
+	// sending them needed info.
+	if (cachedUploads) {
+		for (NSNumber * key in cachedUploads) {
+			[self uploadBArtData:[cachedUploads objectForKey:key] forBArtType:[key intValue]];
+		}
+		self.cachedUploads = nil;
+	}
+	
+	if (bartQueries) {
+		for (SNACRequest * request in bartQueries) {
+			AIMBArtRequest * bartRequest = request.userInfo;
+			[self queryBArtID:[bartRequest bartID] owner:[bartRequest queryUsername]];
+		}
+		self.bartQueries = nil;
+	}
+	
 	if (requests) [requests release];
 	requests = [[NSMutableArray alloc] init];
 	
@@ -111,11 +134,8 @@
 
 - (BOOL)queryBArtID:(ANBArtID *)bartID owner:(NSString *)username {
 	if (![bartConnection isOpen]) {
-		[bartConnection release];
-		bartConnection = nil;
-		if (![self reconnectToBArt]) {
-			return NO;
-		}
+		NSLog(@"Attempted to query even though we are closed.");
+		return NO;
 	}
 	
 	
@@ -126,6 +146,18 @@
 	SNACRequest * request = [[SNACRequest alloc] initWithSNAC:bartQuery];
 	AIMBArtRequest * bartRequest = [[AIMBArtRequest alloc] initWithBartID:bartID username:username];
 	request.userInfo = bartRequest;
+	
+	if (![bartConnection isOpen]) {
+		if (!self.bartQueries) {
+			self.bartQueries = [NSMutableArray array];
+		}
+		[self.bartQueries addObject:request];
+		[request release];
+		[bartRequest release];
+		[bartQuery release];
+		NSLog(@"Attempted to query even though we are closed.");
+		return NO;
+	}
 	
 	[requests addObject:request];
 	[bartRequest release];
@@ -142,11 +174,12 @@
 }
 - (BOOL)uploadBArtData:(NSData *)bartData forBArtType:(UInt16)bartType {
 	if (![bartConnection isOpen]) {
-		[bartConnection release];
-		bartConnection = nil;
-		if (![self reconnectToBArt]) {
-			return NO;
+		if (!cachedUploads) {
+			self.cachedUploads = [NSMutableDictionary dictionary];
 		}
+		[self.cachedUploads setObject:bartData forKey:[NSNumber numberWithInt:bartType]];
+		NSLog(@"Attempted to query even though we are closed.");
+		return NO;
 	}
 	
 	UInt16 typeFlip = flipUInt16(bartType);
@@ -190,6 +223,9 @@
 	NSLog(@"Bart closed.");
 	[bartConnection release];
 	bartConnection = nil;
+	if ([delegate respondsToSelector:@selector(aimBuddyArtDisconnected:)]) {
+		[delegate aimBuddyArtDisconnected:self];
+	}
 }
 
 - (void)oscarConnectionPacketWaiting:(OSCARConnection *)connection {
@@ -254,6 +290,9 @@
 	if (bartConnection) [bartConnection release];
 	[requests release];
 	self.ourBuddyIcon = nil;
+	self.smallBuddyIcon = nil;
+	self.cachedUploads = nil;
+	self.bartQueries = nil;
 	[super dealloc];
 }
 

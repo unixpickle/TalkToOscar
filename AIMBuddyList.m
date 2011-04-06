@@ -17,7 +17,7 @@
 @synthesize pdMode;
 
 - (id)initWithFeedbag:(AIMFeedbag *)feedbag {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		AIMFeedbagItem * rootGroup = [feedbag rootGroup];
 		if (!rootGroup) {
 			[super dealloc];
@@ -87,13 +87,12 @@
 
 - (void)updateStatusesFromBuddyList:(AIMBuddyList *)buddyList {
 	for (AIMGroup * group in groups) {
-		for (AIMBuddy * buddy in group.buddies) {
+		for (int i = 0; i < [group.buddies count]; i++) {
+			AIMBuddy * buddy = [[group buddies] objectAtIndex:i];
 			AIMBuddy * otherBuddy = [buddyList buddyWithName:[buddy username]];
 			if (otherBuddy) {
-				buddy.buddyStatus = otherBuddy.buddyStatus;
-				buddy.previousStatus = otherBuddy.previousStatus;
-				buddy.nickInfo = otherBuddy.nickInfo;
-				buddy.iconData = otherBuddy.iconData;
+				[otherBuddy loadSettingsFromBuddy:buddy];
+				[group.buddies replaceObjectAtIndex:i withObject:otherBuddy];
 			}
 		}
 	}

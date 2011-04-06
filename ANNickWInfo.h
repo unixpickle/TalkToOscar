@@ -36,6 +36,7 @@
 
 - (ANBArtID *)extractStatus;
 - (ANBArtID *)extractIcon;
+- (ANBArtID *)extractSmallIcon;
 - (NSArray *)bartIDs;
 - (UInt16)nickFlags;
 - (TLV *)attributeOfType:(UInt16)attribute;

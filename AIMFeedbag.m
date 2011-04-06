@@ -16,7 +16,7 @@
 @synthesize numClasses;
 
 - (id)initWithSnac:(SNAC *)feedbagReply {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		NSData * contents = [feedbagReply innerContents];
 		UInt16 numItems = 0;
 		const char * bytes = [contents bytes];
@@ -120,14 +120,14 @@
 }
 
 - (UInt16)randomItemID {
-	for (UInt16 i = 0; i < 1024; i++) {
-		if (![self hasItemOfID:i]) return i;
+	for (UInt16 i = (arc4random() % 10000) + 2000; i < 0xFFFE; i++) {
+		if (![self hasItemOfID:i] && ![self hasGroupOfID:i]) return i;
 	}
 	return 0;
 }
 
 - (UInt16)randomGroupID {
-	for (UInt16 i = 0; i < 1024; i++) {
+	for (UInt16 i = (arc4random() % 10000) + 2000; i < 0xFFFE; i++) {
 		if (![self hasGroupOfID:i]) return i;
 	}
 	return 0;
@@ -136,7 +136,7 @@
 #pragma mark NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		numClasses = [aDecoder decodeIntForKey:@"numClasses"];
 		items = [aDecoder decodeObjectForKey:@"items"];
 		updateTime = [aDecoder decodeIntForKey:@"utime"];

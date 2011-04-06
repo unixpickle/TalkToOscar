@@ -181,16 +181,21 @@
 
 - (ANBArtID *)extractIcon {
 	ANBArtID * icon = nil;
-	for (TLV * packet in self.userAttributes) {
-		if ([packet type] == TLV_BART_INFO) {
-			int mLength = [[packet tlvData] length];
-			NSArray * bartList = [ANBArtID decodeBARTIDArray:[[packet tlvData] bytes]
-													  length:&mLength];
-			for (ANBArtID * bid in bartList) {
-				if ([bid type] == BUDDY_ICON) {
-					icon = bid;
-				}
-			}
+	NSArray * bartList = [self bartIDs];
+	for (ANBArtID * bid in bartList) {
+		if ([bid type] == BUDDY_ICON) {
+			icon = bid;
+		}
+	}
+	return icon;
+}
+
+- (ANBArtID *)extractSmallIcon {
+	ANBArtID * icon = nil;
+	NSArray * bartList = [self bartIDs];
+	for (ANBArtID * bid in bartList) {
+		if ([bid type] == BUDDY_ICON_SMALL) {
+			icon = bid;
 		}
 	}
 	return icon;

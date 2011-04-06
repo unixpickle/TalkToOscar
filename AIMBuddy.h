@@ -20,6 +20,7 @@
 	AIMBuddyStatus * buddyStatus;
 	AIMBuddyStatus * previousStatus;
 	NSData * iconData;
+	NSData * smallIconData;
 	AIMGroup * group;
 }
 
@@ -29,10 +30,13 @@
 @property (nonatomic, retain) AIMBuddyStatus * buddyStatus;
 @property (nonatomic, retain) AIMBuddyStatus * previousStatus;
 @property (nonatomic, retain) NSData * iconData;
+@property (nonatomic, retain) NSData * smallIconData;
 @property (nonatomic, assign) AIMGroup * group;
 
 - (id)initWithUsername:(NSString *)_username;
 + (id)buddyWithUsername:(NSString *)_username;
+
+- (void)loadSettingsFromBuddy:(AIMBuddy *)newBuddy;
 
 - (UInt16)idleMinutes;
 

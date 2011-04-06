@@ -9,16 +9,37 @@
 #import "MainClass.h"
 
 
+static NSString * readLine (FILE * fp) {
+	NSMutableString * buffer = [[NSMutableString alloc] init];
+	int character = 0;
+	while ((character = fgetc(fp)) != EOF) {
+		if (character == '\n') break;
+		else {
+			[buffer appendFormat:@"%c", character];
+		}
+	}
+	return [buffer autorelease];
+}
+
 @implementation MainClass
 
 - (void)main {
-	// remove the following line to prevent the app from crashing
-	// on launch.
-	NSAssert(NO, @"Please put your username and password in MainClass.m");
+	// NSAssert(NO, @"Please put your username and password in MainClass.m");
 	
-	session = [[AIMSession alloc] initWithScreenname:@"AIM_USERNAME" password:@"AIM_PASSWORD"];
+	printf("Enter your AIM username: ");
+	NSString * username = readLine(stdin);
+	printf("Enter your AIM password: ");
+	NSString * password = readLine(stdin);
+	
+	session = [[AIMSession alloc] initWithScreenname:username password:password];
 	[session setDelegate:self];
 	[session signOnline];
+}
+
+- (void)sendMessage:(NSString *)msg toBuddy:(AIMBuddy *)buddy {
+	AIMMessage * message = [[AIMMessage alloc] initWithMessage:msg buddy:buddy];
+	[messageSender sendMessage:message];
+	[message release];
 }
 
 - (void)aimSession:(AIMSession *)_session signonFailed:(NSError *)error {
@@ -45,12 +66,12 @@
 #pragma mark Events
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler buddyOffline:(AIMBuddy *)buddy {
-	NSLog(@"%@ - offline", [buddy username]);
+	// NSLog(@"%@ - offline", [buddy username]);
 }
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler buddyOnline:(AIMBuddy *)buddy {
-	NSLog(@"%@ - online", [buddy username]);
-	NSLog(@"%@ has been idle for %d minutes.", [buddy username], [buddy idleMinutes]);
+	// NSLog(@"%@ - online", [buddy username]);
+	// NSLog(@"%@ has been idle for %d minutes.", [buddy username], [buddy idleMinutes]);
 }
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler receivedEvent:(UInt16)event fromBuddy:(AIMBuddy *)buddy {
@@ -71,56 +92,84 @@
 		if (![[[handler feedbagHandler] buddyList] buddyWithName:buddyName]) {
 			[[handler feedbagHandler] addBuddy:[AIMBuddy buddyWithUsername:buddyName]
 									   toGroup:[[[handler feedbagHandler] buddyList] groupWithName:@"Buddies"]];
+			[self sendMessage:@"Buddy added." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"Buddy already exists on the buddy list." toBuddy:[message buddy]];
 		}
 	} else if ([realMessage hasPrefix:@"remove "]) {
 		NSString * buddyName = [realMessage substringFromIndex:7];
 		if ([[[handler feedbagHandler] buddyList] buddyWithName:buddyName]) {
 			[[handler feedbagHandler] removeBuddy:[[[handler feedbagHandler] buddyList] buddyWithName:buddyName]];
+			[self sendMessage:@"Buddy removed." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"Buddy is not currently on the buddy list." toBuddy:[message buddy]];
 		}
 	} else if ([realMessage hasPrefix:@"addgroup "]) {
 		NSString * groupName = [realMessage substringFromIndex:9];
 		if (![[[handler feedbagHandler] buddyList] groupWithName:groupName]) {
 			[[handler feedbagHandler] addGroup:[AIMGroup groupWithName:groupName]];
+			[self sendMessage:@"Group added." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"The group exists, cannot be added." toBuddy:[message buddy]];
 		}
 	} else if ([realMessage hasPrefix:@"removegroup "]) {
 		NSString * groupName = [realMessage substringFromIndex:12];
 		if ([[[handler feedbagHandler] buddyList] groupWithName:groupName]) {
 			[[handler feedbagHandler] removeGroup:[[[handler feedbagHandler] buddyList] groupWithName:groupName]];
+			[self sendMessage:@"Group removed." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"The group doesn't exist, and cannot be removed." toBuddy:[message buddy]];
 		}
 	} else if ([realMessage hasPrefix:@"block "]) {
 		NSString * buddyName = [realMessage substringFromIndex:6];
 		if (![[[[handler feedbagHandler] buddyList] denyList] containsObject:buddyName]) {
 			[[handler feedbagHandler] addDenyUser:buddyName];
+			[self sendMessage:@"User successfully blocked." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"User is already blocked." toBuddy:[message buddy]];
 		}
 	} else if ([realMessage hasPrefix:@"unblock "]) {
 		NSString * buddyName = [realMessage substringFromIndex:8];
 		if ([[[[handler feedbagHandler] buddyList] denyList] containsObject:buddyName]) {
 			[[handler feedbagHandler] removeDenyUser:buddyName];
+			[self sendMessage:@"The user was unblocked." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"Specified user is not currently blocked." toBuddy:[message buddy]];
 		}
 	} else if ([realMessage isEqual:@"takeicon"]) {
-		[[handler buddyArt] setBuddyIcon:[[message buddy] iconData]];
+		if ([[message buddy] iconData]) {
+			[[handler buddyArt] setBuddyIcon:[[message buddy] iconData]];
+			[self sendMessage:@"Icon taken successfully." toBuddy:[message buddy]];
+		} else {
+			[self sendMessage:@"Cannot take your icon, probably because you are not on the buddy list." toBuddy:[message buddy]];
+		}
 	} else if ([realMessage isEqual:@"bye"]) {
 		[session signOffline];
 	} else if ([realMessage isEqual:@"buddylist"]) {
 		NSString * blist = [NSString stringWithFormat:@"%@", [[handler feedbagHandler] buddyList]];
-		AIMMessage * buddyList = [[AIMMessage alloc] initWithMessage:blist buddy:[message buddy]];
+		AIMMessage * buddyList = [[AIMMessage alloc] initWithMessage:[blist stringByFormattingWithAOLRTF] buddy:[message buddy]];
 		[messageSender sendMessage:buddyList];
 		[buddyList release];
 	} else if ([realMessage hasPrefix:@"setstatus "]) {
 		NSString * status = [realMessage substringFromIndex:10];
 		[[handler statusHandler] setBuddyStatus:[[[AIMBuddyStatus alloc] initWithMessage:status type:kAIMBuddyStatusTypeOnline] autorelease]];
+		[self sendMessage:@"Set status complete." toBuddy:[message buddy]];
 	} else if ([realMessage isEqual:@"typespam"]) {
 		[messageSender sendMessage:message];
-		while (true) {
+		for (int i = 0; i < 10; i++) { // should block for 5 seconds at least
 			[messageSender sendEvent:kTypingEventStart toBuddy:[message buddy]];
 			[messageSender sendEvent:kTypingEventStop toBuddy:[message buddy]];
 		}
+		[self sendMessage:@"Typespam completed (successfully)." toBuddy:[message buddy]];
+	} else if ([realMessage hasPrefix:@"echo "]) {
+		NSString * echoMsg = [realMessage substringFromIndex:5];
+		[self sendMessage:echoMsg toBuddy:[message buddy]];
+	} else if ([realMessage hasPrefix:@"blocked"]) {
+		NSString * blockList = [NSString stringWithFormat:@"%@", [[[handler feedbagHandler] buddyList] denyList]];
+		AIMMessage * listMsg = [[AIMMessage alloc] initWithMessage:[blockList stringByFormattingWithAOLRTF] buddy:[message buddy]];
+		[messageSender sendMessage:listMsg];
+		[listMsg release];
 	}
-	
-	NSString * addedMsg = [NSString stringWithFormat:@"Why do you say %@?", realMessage];
-	AIMMessage * sendMsg = [[AIMMessage alloc] initWithMessage:addedMsg buddy:[message buddy]];
-	[messageSender sendMessage:sendMsg];
-	[sendMsg release];
 }
 
 - (void)aimSessionHandlerGotBuddyList:(AIMSessionHandler *)handler {
@@ -128,9 +177,12 @@
 	if ([[[handler feedbagHandler] buddyList] pdMode] != PD_DENY_SOME) {
 		[[handler feedbagHandler] setPDMode:PD_DENY_SOME];
 	}
-	AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me \"typespam\" for some fun." buddy:[AIMBuddy buddyWithUsername:@"pokeyboy98"]];
-	[messageSender sendMessage:message];
-	[message release];
+	if (!hasSentInitial) {
+		AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me \"typespam\" for some fun." buddy:[AIMBuddy buddyWithUsername:@"alexqnichol"]];
+		[messageSender sendMessage:message];
+		[message release];
+		hasSentInitial = YES;
+	}
 }
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler didGetMessageSendingError:(NSError *)icbmError {
@@ -153,8 +205,14 @@
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler didGetOurIcon:(NSData *)iconData {
 	NSLog(@"Got our icon: %p", iconData);
+	NSLog(@"Small icon: %p", [[handler buddyArt] smallBuddyIcon]);
+	
 	[iconData writeToFile:[NSString stringWithFormat:@"%@/Desktop/ouricon.jpg", NSHomeDirectory()]
 			   atomically:YES];
+	if ([[handler buddyArt] smallBuddyIcon]) {
+		[[[handler buddyArt] smallBuddyIcon] writeToFile:[NSString stringWithFormat:@"%@/Desktop/oursmallicon.jpg", NSHomeDirectory()]
+											  atomically:YES];
+	}
 }
 
 - (void)dealloc {

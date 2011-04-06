@@ -16,6 +16,7 @@
 @synthesize feedbagItem;
 @synthesize previousStatus;
 @synthesize iconData;
+@synthesize smallIconData;
 @synthesize group;
 
 - (void)setNickInfo:(ANNickWInfo *)_nickInfo {
@@ -38,7 +39,7 @@
 }
 
 - (id)initWithUsername:(NSString *)_username {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		username = [_username copy];
 	}
 	return self;
@@ -46,6 +47,15 @@
 
 + (id)buddyWithUsername:(NSString *)_username {
 	return [[[AIMBuddy alloc] initWithUsername:_username] autorelease];
+}
+
+- (void)loadSettingsFromBuddy:(AIMBuddy *)newBuddy {
+	if (newBuddy.iconData) self.iconData = [newBuddy iconData];
+	if (newBuddy.smallIconData) self.smallIconData = [newBuddy smallIconData];
+	if (newBuddy.group) self.group = [newBuddy group];
+	if (newBuddy.nickInfo) self.nickInfo = [newBuddy nickInfo];
+	if (newBuddy.previousStatus) self.previousStatus = [newBuddy previousStatus];
+	if (newBuddy.feedbagItem) self.feedbagItem = [newBuddy feedbagItem];
 }
 
 - (UInt16)idleMinutes {
@@ -67,6 +77,7 @@
 	self.username = nil;
 	self.buddyStatus = nil;
 	self.iconData = nil;
+	self.smallIconData = nil;
 	self.previousStatus = nil;
 	[super dealloc];
 }

@@ -160,6 +160,7 @@
 	} else if (SNAC_ID_IS_EQUAL([snac snac_id], SNAC_ID_NEW(SNAC_OSERVICE, OSERVICE__NICK_INFO_UPDATE))) {
 		[statusHandler handleUserInfo:snac];
 		ANBArtID * icon = [statusHandler.userInfo extractIcon];
+		ANBArtID * iconSmall = [statusHandler.userInfo extractSmallIcon];
 		if (icon) {
 			[buddyArt queryBArtID:icon owner:[session loginUsername]];
 		} else {
@@ -167,6 +168,11 @@
 			if ([delegate respondsToSelector:@selector(aimSessionHandler:didGetOurIcon:)]) {
 				[delegate aimSessionHandler:self didGetOurIcon:nil];
 			}
+		}
+		if (iconSmall) {
+			[buddyArt queryBArtID:iconSmall owner:[session loginUsername]];
+		} else {
+			buddyArt.smallBuddyIcon = nil;
 		}
 	}
 	
@@ -237,9 +243,17 @@
 	}
 	if ([buddyArt isBartAvailable]) {
 		ANBArtID * buddyIcon = [[buddy nickInfo] extractIcon];
+		ANBArtID * smallIcon = [[buddy nickInfo] extractSmallIcon];
 		if (buddyIcon) {
 			if (![buddyArt queryBArtID:buddyIcon owner:[buddy username]]) {
 				NSLog(@"Icon request failed.");
+			}
+		} else {
+			buddy.iconData = nil;
+			if (smallIcon) {
+				if (![buddyArt queryBArtID:smallIcon owner:[buddy username]]) {
+					NSLog(@"Icon request failed.");
+				}
 			}
 		}
 	}
@@ -258,9 +272,29 @@
 		AIMBuddy * buddy = [[feedbagHandler buddyList] buddyWithName:[bartRequest queryUsername]];
 		if (!buddy) return;
 		buddy.iconData = bartData;
+		buddy.smallIconData = nil;
 		if ([delegate respondsToSelector:@selector(aimSessionHandler:buddyChangedIcon:)]) {
 			[delegate aimSessionHandler:self buddyChangedIcon:buddy];
 		}
+	} else if ([bartRequest bartID].type == BUDDY_ICON_SMALL) {
+		if ([[bartRequest queryUsername] isEqual:[session loginUsername]]) {
+			buddyArt.smallBuddyIcon = bartData;
+			if ([delegate respondsToSelector:@selector(aimSessionHandler:didGetOurIcon:)]) {
+				[delegate aimSessionHandler:self didGetOurIcon:buddyArt.ourBuddyIcon];
+			}
+		}
+		AIMBuddy * buddy = [[feedbagHandler buddyList] buddyWithName:[bartRequest queryUsername]];
+		if (!buddy) return;
+		buddy.smallIconData = bartData;
+		if ([delegate respondsToSelector:@selector(aimSessionHandler:buddyChangedIcon:)]) {
+			[delegate aimSessionHandler:self buddyChangedIcon:buddy];
+		}
+	}
+}
+
+- (void)aimBuddyArtDisconnected:(AIMBuddyArt *)_buddyArt {
+	if (!_buddyArt.hasSentOSERVICERequest) {
+		bartRequestID = [_buddyArt connectToBArt:session];
 	}
 }
 

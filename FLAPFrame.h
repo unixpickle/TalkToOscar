@@ -17,7 +17,7 @@
 	NSData * frameData;
 }
 
-@property (readwrite) UInt8 indentifier;
+@property (readwrite) UInt8 identifier;
 @property (readwrite) UInt8 channel;
 @property (readwrite) UInt16 sequenceNumber;
 @property (nonatomic, retain) NSData * frameData;

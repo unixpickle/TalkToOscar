@@ -50,7 +50,7 @@
 	// first, launch the connection.
 	if (hasDied || self.isOpen) return NO;
 	struct sockaddr_in serv_addr;
-    struct hostent * server;
+	struct hostent * server;
 	socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (socketfd < 0) {
 		if (error)

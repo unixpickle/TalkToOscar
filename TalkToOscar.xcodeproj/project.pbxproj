@@ -297,10 +297,10 @@
 		FA6712DD133D2C8900EA9E6F /* Status Messages */ = {
 			isa = PBXGroup;
 			children = (
-				FA91AA7E133CD42900229DCC /* AIMBuddyStatus.h */,
-				FA91AA7F133CD42900229DCC /* AIMBuddyStatus.m */,
 				FA6712DF133D2C9F00EA9E6F /* AIMStatusMessageHandler.h */,
 				FA6712E0133D2C9F00EA9E6F /* AIMStatusMessageHandler.m */,
+				FA91AA7E133CD42900229DCC /* AIMBuddyStatus.h */,
+				FA91AA7F133CD42900229DCC /* AIMBuddyStatus.m */,
 				FA5B5F0A133B989F009C9ABD /* ANNickWInfo.h */,
 				FA5B5F0B133B989F009C9ABD /* ANNickWInfo.m */,
 			);

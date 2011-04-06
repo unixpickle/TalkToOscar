@@ -11,7 +11,7 @@
 
 @implementation FLAPFrame
 
-@synthesize indentifier;
+@synthesize identifier;
 @synthesize channel;
 @synthesize sequenceNumber;
 @synthesize frameData;
@@ -28,7 +28,7 @@
 // returns length in *length of the amount
 // of bytes it used.
 - (id)initWithPointer:(const char *)ptr length:(int *)length {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		if (*length < 6) {
 			[super dealloc];
 			return nil;

@@ -12,6 +12,7 @@
 
 #define STATUS_STR 2
 #define BUDDY_ICON 1
+#define BUDDY_ICON_SMALL 0
 
 @interface ANBArtID : NSObject <OSCARPacket> {
 	UInt16 type;

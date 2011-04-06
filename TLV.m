@@ -229,6 +229,10 @@
 	return immutableData;
 }
 
+- (id)description {
+	return [NSString stringWithFormat:@"TLV %d", type];
+}
+
 #pragma mark NSCopying
 
 - (TLV *)copyWithZone:(NSZone *)zone {

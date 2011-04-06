@@ -285,13 +285,16 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>105</integer>
+									<integer>58</integer>
+									<integer>54</integer>
+									<integer>46</integer>
+									<integer>32</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 1246}, {290, 760}}</string>
+							<string>{{0, 747}, {290, 760}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -328,7 +331,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MainClass.m</string>
+								<string>AIMBuddy.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -336,11 +339,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MainClass.m</string>
+										<string>AIMBuddy.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>FA4702DF1346BB03004AFBAC</string>
+										<string>FAEA8DAD134BA9BD003B688A</string>
 										<key>history</key>
 										<array>
 											<string>FA8AEB5A133A9B9B00B9C0DE</string>
@@ -380,12 +383,10 @@
 											<string>FA7F596913414F300084A365</string>
 											<string>FA7F5984134157310084A365</string>
 											<string>FA7F59CE134160AA0084A365</string>
-											<string>FA7F59D0134160AA0084A365</string>
 											<string>FA7F59FB134162350084A365</string>
 											<string>FA7F5A17134163890084A365</string>
 											<string>FA7F5A4B134168810084A365</string>
 											<string>FA7F5A4C134168810084A365</string>
-											<string>FA8B2B7E13417F3200A8CEB6</string>
 											<string>FA8B2B8213417F3200A8CEB6</string>
 											<string>FA8B2B8413417F3200A8CEB6</string>
 											<string>FA01437F134189610059C05A</string>
@@ -408,14 +409,12 @@
 											<string>FA014416134193130059C05A</string>
 											<string>FA01443F134195070059C05A</string>
 											<string>FA01444B134195E60059C05A</string>
-											<string>FAAAA18213420F26002801AF</string>
 											<string>FAAAA1A1134211C8002801AF</string>
 											<string>FAAAA1A3134211C8002801AF</string>
 											<string>FAAAA1BF134214D2002801AF</string>
 											<string>FAAAA1C0134214D2002801AF</string>
 											<string>FAAAA1C9134215A6002801AF</string>
 											<string>FAAAA1CA134215A6002801AF</string>
-											<string>FAAAA1D1134215D7002801AF</string>
 											<string>FA33574D134241CA001836CF</string>
 											<string>FA33574E134241CA001836CF</string>
 											<string>FA335750134241CA001836CF</string>
@@ -429,7 +428,11 @@
 											<string>FA33577A1342443C001836CF</string>
 											<string>FA4877C41342454100DCC4C9</string>
 											<string>FA4702DE1346BB03004AFBAC</string>
-											<string>FA4877C31342454100DCC4C9</string>
+											<string>FAEA8DA8134BA9BD003B688A</string>
+											<string>FAEA8DA9134BA9BD003B688A</string>
+											<string>FAEA8DAA134BA9BD003B688A</string>
+											<string>FAEA8DAB134BA9BD003B688A</string>
+											<string>FAEA8DAC134BA9BD003B688A</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -441,14 +444,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1128, 617}}</string>
+								<string>{{0, 0}, {1128, 613}}</string>
 								<key>RubberWindowFrame</key>
 								<string>480 239 1440 819 0 0 1920 1058 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>617pt</string>
+							<string>613pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -461,14 +464,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 622}, {1128, 156}}</string>
+								<string>{{0, 618}, {1128, 160}}</string>
 								<key>RubberWindowFrame</key>
 								<string>480 239 1440 819 0 0 1920 1058 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>156pt</string>
+							<string>160pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -487,9 +490,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>FA4702E01346BB03004AFBAC</string>
+				<string>FAEA8D98134BA4BA003B688A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>FA4702E11346BB03004AFBAC</string>
+				<string>FAEA8D99134BA4BA003B688A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -627,10 +630,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>FA4702E21346BB03004AFBAC</string>
-		<string>FA4702E31346BB03004AFBAC</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>1C78EAAD065D492600B07095</string>
 		<string>FA8AEAE0133A8CCB00B9C0DE</string>
 		<string>/Users/alex/xCode/git/TalkToOscar/TalkToOscar.xcodeproj</string>
 	</array>
@@ -712,7 +711,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>FA8AEAE0133A8CCB00B9C0DE</string>
-				<string>FA4702D61346BAF6004AFBAC</string>
+				<string>FAEA8D9A134BA4BA003B688A</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

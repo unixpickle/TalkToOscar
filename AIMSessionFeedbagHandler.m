@@ -16,14 +16,14 @@
 @synthesize delegate;
 
 - (id)init {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		
 	}
 	return self;
 }
 
 - (id)initWithSession:(AIMSession *)_session {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		feedbagOperations = [[NSMutableArray alloc] init];
 		session = [_session retain];
 	}
@@ -127,9 +127,11 @@
 	AIMFeedbagTransaction * transaction = [feedbagTransactions objectAtIndex:0];
 	if (![transaction isSuccess:previousResponse] && previousResponse) {
 		AIMFeedbagTransaction * transactionBracket = [feedbagTransactions lastObject];
-		if (![session sendRegularSnac:[transactionBracket transactionSnac]]) {
-			[feedbagOperations removeAllObjects];
-			return NO;
+		if ([transactionBracket isClusterBracket]) {
+			if (![session sendRegularSnac:[transactionBracket transactionSnac]]) {
+				[feedbagOperations removeAllObjects];
+				return NO;
+			}
 		}
 		if ([delegate respondsToSelector:@selector(feedbagHandler:feedbagOperationFailed:)]) {
 			[delegate feedbagHandler:self feedbagOperationFailed:[feedbagOperations objectAtIndex:0]];
@@ -451,13 +453,13 @@
 	newDeny.itemID = [feedbag randomItemID];
 	newDeny.itemName = denyUsername;
 	
-	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
+	// AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
 	AIMFeedbagTransaction * insertTransaction = [[[AIMFeedbagTransaction alloc] initInsert:newDeny] autorelease];
-	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
+	// AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
 	NSMutableArray * transactions = [[NSMutableArray alloc] init];
-	[transactions addObject:startCluster];
+	// [transactions addObject:startCluster];
 	[transactions addObject:insertTransaction];
-	[transactions addObject:endCluster];
+	// [transactions addObject:endCluster];
 	
 	[newDeny release];
 	
@@ -480,6 +482,7 @@
 #pragma mark External Modifications
 			 
 - (BOOL)addRootGroup {
+	NSLog(@"Add root group.");
 	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
 	operation.operationType = kAIMFeedbagOperationRootGroup;
 	BOOL flag = [self pushOperation:operation];
@@ -525,6 +528,7 @@
 }
 
 - (BOOL)setPDMode:(UInt8)pdMode {
+	NSLog(@"Set PD Mode.");
 	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
 	operation.operationType = kAIMFeedbagOperationSetPDMode;
 	operation.integerMode = pdMode;
@@ -552,6 +556,7 @@
 }
 
 - (BOOL)removeBARTIcon {
+	NSLog(@"Remove bart icon.");
 	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
 	operation.operationType = kAIMFeedbagOperationRemoveBART;
 	BOOL flag = [self pushOperation:operation];

@@ -12,6 +12,12 @@
 		8DD76F9F0486AA7600D96B5E /* TalkToOscar.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* TalkToOscar.1 */; };
 		FA1EB69A1341089B0032FEAE /* AIMFeedbag+PD.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB6991341089B0032FEAE /* AIMFeedbag+PD.m */; };
 		FA38BB79133E352700F88F88 /* AIMFeedbagOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38BB78133E352700F88F88 /* AIMFeedbagOperation.m */; };
+		FA3D59A4134D4062000DA1A4 /* ANEPNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D5999134D4062000DA1A4 /* ANEPNumber.m */; };
+		FA3D59A5134D4062000DA1A4 /* ANEPVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D599B134D4062000DA1A4 /* ANEPVariable.m */; };
+		FA3D59A6134D4062000DA1A4 /* ANEPOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D599D134D4062000DA1A4 /* ANEPOperator.m */; };
+		FA3D59A7134D4062000DA1A4 /* ANEPFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D599F134D4062000DA1A4 /* ANEPFunction.m */; };
+		FA3D59A8134D4062000DA1A4 /* ANEPExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D59A1134D4062000DA1A4 /* ANEPExpression.m */; };
+		FA3D59A9134D4062000DA1A4 /* NSString+ANEP.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D59A3134D4062000DA1A4 /* NSString+ANEP.m */; };
 		FA56CAA4133C2067007269BE /* AIMBuddyList.m in Sources */ = {isa = PBXBuildFile; fileRef = FA56CAA3133C2067007269BE /* AIMBuddyList.m */; };
 		FA56CAA7133C208A007269BE /* AIMGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = FA56CAA6133C208A007269BE /* AIMGroup.m */; };
 		FA5B5EFC133B93C6009C9ABD /* AIMBuddy.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B5EFB133B93C6009C9ABD /* AIMBuddy.m */; };
@@ -86,6 +92,19 @@
 		FA1EB6991341089B0032FEAE /* AIMFeedbag+PD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AIMFeedbag+PD.m"; sourceTree = "<group>"; };
 		FA38BB77133E352700F88F88 /* AIMFeedbagOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIMFeedbagOperation.h; sourceTree = "<group>"; };
 		FA38BB78133E352700F88F88 /* AIMFeedbagOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIMFeedbagOperation.m; sourceTree = "<group>"; };
+		FA3D5997134D4062000DA1A4 /* ANEP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANEP.h; sourceTree = "<group>"; };
+		FA3D5998134D4062000DA1A4 /* ANEPNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANEPNumber.h; sourceTree = "<group>"; };
+		FA3D5999134D4062000DA1A4 /* ANEPNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANEPNumber.m; sourceTree = "<group>"; };
+		FA3D599A134D4062000DA1A4 /* ANEPVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANEPVariable.h; sourceTree = "<group>"; };
+		FA3D599B134D4062000DA1A4 /* ANEPVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANEPVariable.m; sourceTree = "<group>"; };
+		FA3D599C134D4062000DA1A4 /* ANEPOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANEPOperator.h; sourceTree = "<group>"; };
+		FA3D599D134D4062000DA1A4 /* ANEPOperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANEPOperator.m; sourceTree = "<group>"; };
+		FA3D599E134D4062000DA1A4 /* ANEPFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANEPFunction.h; sourceTree = "<group>"; };
+		FA3D599F134D4062000DA1A4 /* ANEPFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANEPFunction.m; sourceTree = "<group>"; };
+		FA3D59A0134D4062000DA1A4 /* ANEPExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANEPExpression.h; sourceTree = "<group>"; };
+		FA3D59A1134D4062000DA1A4 /* ANEPExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANEPExpression.m; sourceTree = "<group>"; };
+		FA3D59A2134D4062000DA1A4 /* NSString+ANEP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ANEP.h"; sourceTree = "<group>"; };
+		FA3D59A3134D4062000DA1A4 /* NSString+ANEP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ANEP.m"; sourceTree = "<group>"; };
 		FA56CAA2133C2067007269BE /* AIMBuddyList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIMBuddyList.h; sourceTree = "<group>"; };
 		FA56CAA3133C2067007269BE /* AIMBuddyList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIMBuddyList.m; sourceTree = "<group>"; };
 		FA56CAA5133C208A007269BE /* AIMGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIMGroup.h; sourceTree = "<group>"; };
@@ -217,6 +236,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA3D5996134D4057000DA1A4 /* ANEP */,
 				FA8AEB9D133AE2B600B9C0DE /* 3rd Party */,
 				FA8AEAD7133A8B0500B9C0DE /* Datatypes */,
 				FA8AEB87133AD7D800B9C0DE /* Authentication */,
@@ -251,6 +271,26 @@
 				C6859EA3029092ED04C91782 /* TalkToOscar.1 */,
 			);
 			name = Documentation;
+			sourceTree = "<group>";
+		};
+		FA3D5996134D4057000DA1A4 /* ANEP */ = {
+			isa = PBXGroup;
+			children = (
+				FA3D5997134D4062000DA1A4 /* ANEP.h */,
+				FA3D5998134D4062000DA1A4 /* ANEPNumber.h */,
+				FA3D5999134D4062000DA1A4 /* ANEPNumber.m */,
+				FA3D599A134D4062000DA1A4 /* ANEPVariable.h */,
+				FA3D599B134D4062000DA1A4 /* ANEPVariable.m */,
+				FA3D599C134D4062000DA1A4 /* ANEPOperator.h */,
+				FA3D599D134D4062000DA1A4 /* ANEPOperator.m */,
+				FA3D599E134D4062000DA1A4 /* ANEPFunction.h */,
+				FA3D599F134D4062000DA1A4 /* ANEPFunction.m */,
+				FA3D59A0134D4062000DA1A4 /* ANEPExpression.h */,
+				FA3D59A1134D4062000DA1A4 /* ANEPExpression.m */,
+				FA3D59A2134D4062000DA1A4 /* NSString+ANEP.h */,
+				FA3D59A3134D4062000DA1A4 /* NSString+ANEP.m */,
+			);
+			name = ANEP;
 			sourceTree = "<group>";
 		};
 		FA56CAA0133C2052007269BE /* Buddy List */ = {
@@ -568,6 +608,12 @@
 				FA7F597213414FB10084A365 /* BArtQueryReplyID.m in Sources */,
 				FA7F5975134153500084A365 /* BArtReply.m in Sources */,
 				FA7F5A16134163770084A365 /* BArtIDWithName.m in Sources */,
+				FA3D59A4134D4062000DA1A4 /* ANEPNumber.m in Sources */,
+				FA3D59A5134D4062000DA1A4 /* ANEPVariable.m in Sources */,
+				FA3D59A6134D4062000DA1A4 /* ANEPOperator.m in Sources */,
+				FA3D59A7134D4062000DA1A4 /* ANEPFunction.m in Sources */,
+				FA3D59A8134D4062000DA1A4 /* ANEPExpression.m in Sources */,
+				FA3D59A9134D4062000DA1A4 /* NSString+ANEP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,6 +11,7 @@
 #import "AIMSessionMessageSender.h"
 #import "AIMSessionHandler.h"
 #import "AOLRTF.h"
+#import "ANEP.h"
 
 @interface MainClass : NSObject <AIMSessionDelegate, AIMSessionHandlerDelegate> {
 	AIMSession * session;

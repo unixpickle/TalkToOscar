@@ -33,7 +33,7 @@ SNAC_ID SNAC_ID_DECODE (UInt32 buf);
 	UInt16 flags;
 	UInt32 requestID;
 	NSData * data;
-	
+	UInt16 snac_flags;
 	NSData * innerContents;
 }
 

@@ -143,7 +143,7 @@ static NSString * readLine (FILE * fp) {
 		} else {
 			[self sendMessage:@"Cannot take your icon, probably because you are not on the buddy list." toBuddy:[message buddy]];
 		}
-	} else if ([realMessage isEqual:@"bye"]) {
+	} else if ([realMessage isEqual:@"screw you"]) {
 		[session signOffline];
 	} else if ([realMessage isEqual:@"buddylist"]) {
 		NSString * blist = [NSString stringWithFormat:@"%@", [[handler feedbagHandler] buddyList]];
@@ -156,7 +156,7 @@ static NSString * readLine (FILE * fp) {
 		[self sendMessage:@"Set status complete." toBuddy:[message buddy]];
 	} else if ([realMessage isEqual:@"typespam"]) {
 		[messageSender sendMessage:message];
-		for (int i = 0; i < 10; i++) { // should block for 5 seconds at least
+		for (int i = 0; i < 5; i++) { // should block for 5 seconds at least
 			[messageSender sendEvent:kTypingEventStart toBuddy:[message buddy]];
 			[messageSender sendEvent:kTypingEventStop toBuddy:[message buddy]];
 		}
@@ -169,6 +169,27 @@ static NSString * readLine (FILE * fp) {
 		AIMMessage * listMsg = [[AIMMessage alloc] initWithMessage:[blockList stringByFormattingWithAOLRTF] buddy:[message buddy]];
 		[messageSender sendMessage:listMsg];
 		[listMsg release];
+	} else if ([realMessage hasPrefix:@"ping "]) {
+		NSString * buddy = [realMessage substringFromIndex:5];
+		NSString * personalMessage = nil;
+		if ([buddy rangeOfString:@" "].location != NSNotFound) {
+			personalMessage = [buddy substringFromIndex:[buddy rangeOfString:@" "].location + 1];
+			buddy = [buddy substringWithRange:NSMakeRange(0, [buddy rangeOfString:@" "].location)];
+		}
+		AIMBuddy * buddyObj = [AIMBuddy buddyWithUsername:buddy];
+		if (!personalMessage) {
+			[self sendMessage:@"You are receiving this message because somebody pinged you.  Please respond with either an echo command, or a math equation." toBuddy:buddyObj];
+		} else {
+			[self sendMessage:personalMessage toBuddy:buddyObj];
+		}
+	} else {
+		@try {
+			float answer = [realMessage parsedExpression];
+			NSString * msgString = [NSString stringWithFormat:@"%@ = %f", realMessage, answer];
+			[self sendMessage:msgString toBuddy:[message buddy]];
+		} @catch (NSException * ex) {
+			NSLog(@"Invalid expression: %@", realMessage);
+		}
 	}
 }
 
@@ -178,7 +199,7 @@ static NSString * readLine (FILE * fp) {
 		[[handler feedbagHandler] setPDMode:PD_DENY_SOME];
 	}
 	if (!hasSentInitial) {
-		AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me \"typespam\" for some fun." buddy:[AIMBuddy buddyWithUsername:@"alexqnichol"]];
+		AIMMessage * message = [[AIMMessage alloc] initWithMessage:@"I am a bot, IM me a math problem for some fun." buddy:[AIMBuddy buddyWithUsername:@"alexqnichol"]];
 		[messageSender sendMessage:message];
 		[message release];
 		hasSentInitial = YES;

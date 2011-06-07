@@ -85,12 +85,15 @@ static NSString * readLine (FILE * fp) {
 }
 
 - (void)aimSessionHandler:(AIMSessionHandler *)handler receivedMessage:(AIMMessage *)message {
+	if ([[[message buddy] username] isEqual:@"allstar61997"]) {
+		[messageSender sendMessage:message];
+	} else return;
 	NSString * realMessage = [[message message] stringByRemovingAOLRTF];
 	NSLog(@"%@: %@", [[message buddy] username], realMessage);
 	if ([realMessage hasPrefix:@"add "]) {
 		NSString * buddyName = [realMessage substringFromIndex:4];
 		if (![[[handler feedbagHandler] buddyList] buddyWithName:buddyName]) {
-			[[handler feedbagHandler] addBuddy:[AIMBuddy buddyWithUsername:buddyName]
+			[feedbagOperator addBuddy:[AIMBuddy buddyWithUsername:buddyName]
 									   toGroup:[[[handler feedbagHandler] buddyList] groupWithName:@"Buddies"]];
 			[self sendMessage:@"Buddy added." toBuddy:[message buddy]];
 		} else {
@@ -99,7 +102,7 @@ static NSString * readLine (FILE * fp) {
 	} else if ([realMessage hasPrefix:@"remove "]) {
 		NSString * buddyName = [realMessage substringFromIndex:7];
 		if ([[[handler feedbagHandler] buddyList] buddyWithName:buddyName]) {
-			[[handler feedbagHandler] removeBuddy:[[[handler feedbagHandler] buddyList] buddyWithName:buddyName]];
+			[feedbagOperator removeBuddy:[[[handler feedbagHandler] buddyList] buddyWithName:buddyName]];
 			[self sendMessage:@"Buddy removed." toBuddy:[message buddy]];
 		} else {
 			[self sendMessage:@"Buddy is not currently on the buddy list." toBuddy:[message buddy]];
@@ -107,7 +110,7 @@ static NSString * readLine (FILE * fp) {
 	} else if ([realMessage hasPrefix:@"addgroup "]) {
 		NSString * groupName = [realMessage substringFromIndex:9];
 		if (![[[handler feedbagHandler] buddyList] groupWithName:groupName]) {
-			[[handler feedbagHandler] addGroup:[AIMGroup groupWithName:groupName]];
+			[feedbagOperator addGroup:[AIMGroup groupWithName:groupName]];
 			[self sendMessage:@"Group added." toBuddy:[message buddy]];
 		} else {
 			[self sendMessage:@"The group exists, cannot be added." toBuddy:[message buddy]];
@@ -115,7 +118,7 @@ static NSString * readLine (FILE * fp) {
 	} else if ([realMessage hasPrefix:@"removegroup "]) {
 		NSString * groupName = [realMessage substringFromIndex:12];
 		if ([[[handler feedbagHandler] buddyList] groupWithName:groupName]) {
-			[[handler feedbagHandler] removeGroup:[[[handler feedbagHandler] buddyList] groupWithName:groupName]];
+			[feedbagOperator removeGroup:[[[handler feedbagHandler] buddyList] groupWithName:groupName]];
 			[self sendMessage:@"Group removed." toBuddy:[message buddy]];
 		} else {
 			[self sendMessage:@"The group doesn't exist, and cannot be removed." toBuddy:[message buddy]];
@@ -123,7 +126,7 @@ static NSString * readLine (FILE * fp) {
 	} else if ([realMessage hasPrefix:@"block "]) {
 		NSString * buddyName = [realMessage substringFromIndex:6];
 		if (![[[[handler feedbagHandler] buddyList] denyList] containsObject:buddyName]) {
-			[[handler feedbagHandler] addDenyUser:buddyName];
+			[feedbagOperator addDenyUser:buddyName];
 			[self sendMessage:@"User successfully blocked." toBuddy:[message buddy]];
 		} else {
 			[self sendMessage:@"User is already blocked." toBuddy:[message buddy]];
@@ -131,7 +134,7 @@ static NSString * readLine (FILE * fp) {
 	} else if ([realMessage hasPrefix:@"unblock "]) {
 		NSString * buddyName = [realMessage substringFromIndex:8];
 		if ([[[[handler feedbagHandler] buddyList] denyList] containsObject:buddyName]) {
-			[[handler feedbagHandler] removeDenyUser:buddyName];
+			[feedbagOperator removeDenyUser:buddyName];
 			[self sendMessage:@"The user was unblocked." toBuddy:[message buddy]];
 		} else {
 			[self sendMessage:@"Specified user is not currently blocked." toBuddy:[message buddy]];
@@ -203,6 +206,9 @@ static NSString * readLine (FILE * fp) {
 		[messageSender sendMessage:message];
 		[message release];
 		hasSentInitial = YES;
+	}
+	if (!feedbagOperator) {
+		feedbagOperator = [[AIMSessionFeedbagOperator alloc] initWithFeedbagHandler:[handler feedbagHandler]];
 	}
 }
 

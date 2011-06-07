@@ -1,6 +1,8 @@
 TalkToOscar
 ===========
 
+IMPORTANT: I have rewritten an OSCAR library from the ground up.  The new library, known as LibOrange, can be accessed at: https://github.com/unixpickle/LibOrange
+
 This is a basic AOL Instant Messenger API for anything with Cocoa/Foundation, and an Objective-C compiler.  It has not been tested on the iPhone, but it is relatively assumed that it will work.  IMs are sent through an IM sender class, which encloses the main session class.  Events such as incoming IMs, buddy art, and everything else is done by a session manager object, which contains multiple other manager objects for various tasks.
 
 The feedbag manager is responsible for managing and updating the buddy list, and can be accessed with [sessionHandler feedbagHandler].  The structure of most things in this library is heavily Object Oriented, which is considered a positive thing by most.

@@ -58,21 +58,7 @@
 - (BOOL)pushOperation:(AIMFeedbagOperation *)operation;
 
 - (BOOL)addRootGroup;
-- (BOOL)removeBuddy:(AIMBuddy *)buddy;
-- (BOOL)addBuddy:(AIMBuddy *)buddy toGroup:(AIMGroup *)group;
-- (BOOL)addGroup:(AIMGroup *)group;
-- (BOOL)removeGroup:(AIMGroup *)group;
 - (BOOL)setPDMode:(UInt8)pdMode;
-- (BOOL)addDenyUser:(NSString *)denyUsername;
-- (BOOL)removeDenyUser:(NSString *)denyUsername;
 - (BOOL)removeBARTIcon;
 
-- (NSMutableArray *)buddyOperationsForRemove:(AIMBuddy *)buddy;
-- (NSMutableArray *)buddyOperationsForAdd:(AIMBuddy *)buddy toGroup:(AIMGroup *)group;
-- (NSMutableArray *)buddyOperationsForAddGroup:(AIMGroup *)group;
-- (NSMutableArray *)buddyOperationsForRemoveGroup:(AIMGroup *)group;
-- (NSMutableArray *)buddyOperationsForSetPDMode:(UInt32)pdMode;
-- (NSMutableArray *)buddyOperationsForRemoveDeny:(NSString *)denyUsername;
-- (NSMutableArray *)buddyOperationsForAddDeny:(NSString *)denyUsername;
-- (NSMutableArray *)removeBartOperations;
 @end

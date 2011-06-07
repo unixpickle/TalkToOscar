@@ -67,6 +67,7 @@
 		FA91AA80133CD42900229DCC /* AIMBuddyStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = FA91AA7F133CD42900229DCC /* AIMBuddyStatus.m */; };
 		FACDC001133D184A00A36BE0 /* AIMFeedbagTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = FACDC000133D184A00A36BE0 /* AIMFeedbagTransaction.m */; };
 		FAE1FB2D134038FA00201F60 /* AIMFeedbag+Search.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE1FB2C134038FA00201F60 /* AIMFeedbag+Search.m */; };
+		FAF8AB4C137875340096C124 /* AIMSessionFeedbagOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AB4B137875340096C124 /* AIMSessionFeedbagOperator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -208,6 +209,8 @@
 		FACDC000133D184A00A36BE0 /* AIMFeedbagTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIMFeedbagTransaction.m; sourceTree = "<group>"; };
 		FAE1FB2B134038FA00201F60 /* AIMFeedbag+Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AIMFeedbag+Search.h"; sourceTree = "<group>"; };
 		FAE1FB2C134038FA00201F60 /* AIMFeedbag+Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AIMFeedbag+Search.m"; sourceTree = "<group>"; };
+		FAF8AB4A137875340096C124 /* AIMSessionFeedbagOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIMSessionFeedbagOperator.h; sourceTree = "<group>"; };
+		FAF8AB4B137875340096C124 /* AIMSessionFeedbagOperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AIMSessionFeedbagOperator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -470,6 +473,8 @@
 				FAE1FB6013403C8400201F60 /* Data Structures */,
 				FA8B153B133C069100075DB5 /* AIMSessionFeedbagHandler.h */,
 				FA8B153C133C069100075DB5 /* AIMSessionFeedbagHandler.m */,
+				FAF8AB4A137875340096C124 /* AIMSessionFeedbagOperator.h */,
+				FAF8AB4B137875340096C124 /* AIMSessionFeedbagOperator.m */,
 				FACDBFFF133D184A00A36BE0 /* AIMFeedbagTransaction.h */,
 				FACDC000133D184A00A36BE0 /* AIMFeedbagTransaction.m */,
 				FA38BB77133E352700F88F88 /* AIMFeedbagOperation.h */,
@@ -614,6 +619,7 @@
 				FA3D59A7134D4062000DA1A4 /* ANEPFunction.m in Sources */,
 				FA3D59A8134D4062000DA1A4 /* ANEPExpression.m in Sources */,
 				FA3D59A9134D4062000DA1A4 /* NSString+ANEP.m in Sources */,
+				FAF8AB4C137875340096C124 /* AIMSessionFeedbagOperator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

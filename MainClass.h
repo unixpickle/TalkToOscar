@@ -10,6 +10,7 @@
 #import "AIMSession.h"
 #import "AIMSessionMessageSender.h"
 #import "AIMSessionHandler.h"
+#import "AIMSessionFeedbagOperator.h"
 #import "AOLRTF.h"
 #import "ANEP.h"
 
@@ -17,6 +18,7 @@
 	AIMSession * session;
 	AIMSessionMessageSender * messageSender;
 	AIMSessionHandler * sessionEvents;
+	AIMSessionFeedbagOperator * feedbagOperator;
 	BOOL hasSentInitial;
 }
 

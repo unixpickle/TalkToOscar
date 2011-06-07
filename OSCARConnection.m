@@ -34,7 +34,7 @@
 }
 
 - (id)initWithHost:(NSString *)host port:(int)_port {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		hostName = [host retain];
 		port = _port;
 		isOpenLock = [[NSLock alloc] init];

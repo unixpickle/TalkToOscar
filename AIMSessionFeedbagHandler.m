@@ -9,6 +9,20 @@
 #import "AIMSessionFeedbagHandler.h"
 
 
+@interface AIMSessionFeedbagHandler (private)
+
+- (NSMutableArray *)buddyOperationsForSetPDMode:(UInt32)pdMode;
+- (NSMutableArray *)removeBartOperations;
+
+- (NSMutableArray *)buddyOperationsForRemove:(AIMBuddy *)buddy;
+- (NSMutableArray *)buddyOperationsForAdd:(AIMBuddy *)buddy toGroup:(AIMGroup *)group;
+- (NSMutableArray *)buddyOperationsForAddGroup:(AIMGroup *)group;
+- (NSMutableArray *)buddyOperationsForRemoveGroup:(AIMGroup *)group;
+- (NSMutableArray *)buddyOperationsForRemoveDeny:(NSString *)denyUsername;
+- (NSMutableArray *)buddyOperationsForAddDeny:(NSString *)denyUsername;
+
+@end
+
 @implementation AIMSessionFeedbagHandler
 
 @synthesize feedbag;
@@ -46,7 +60,6 @@
 		if (![feedbag rootGroup]) {
 			NSLog(@"Root group missing, generating.");
 			[self addRootGroup];
-			[self addGroup:[AIMGroup groupWithName:@"Buddies"]];
 		} else {
 			[self removeBARTIcon];
 			[self regenerateBuddyList];
@@ -287,105 +300,7 @@
 	return NO;
 }
 
-- (NSMutableArray *)buddyOperationsForRemove:(AIMBuddy *)buddy {
-	AIMFeedbagItem * groupItem = [[buddy group] feedbagItem];
-	AIMFeedbagItem * buddyItem = [buddy feedbagItem];
-	if (!groupItem || !buddyItem) return nil;
-	
-	AIMFeedbagItem * recentGroup = nil;
-	if ([AIMGroup isGroupRecentBuddy:groupItem]) {
-		recentGroup = [feedbag recentBuddiesOrderItem];
-	}
-	
-	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
-	AIMFeedbagTransaction * updateTransaction2 = nil;
-	updateTransaction2 = [[[AIMFeedbagTransaction alloc] initUpdate:recentGroup removingItemID:[buddyItem itemID]] autorelease];
-	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:groupItem removingItemID:[buddyItem itemID]] autorelease];
-	AIMFeedbagTransaction * deleteTransaction = [[[AIMFeedbagTransaction alloc] initDelete:buddyItem] autorelease];
-	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
-	
-	NSMutableArray * transactions = [[NSMutableArray alloc] init];
-	
-	[transactions addObject:startCluster];
-	[transactions addObject:updateTransaction];
-	if (updateTransaction2) [updateTransaction2 applyToFeedbag:feedbag];
-	[transactions addObject:deleteTransaction];
-	[transactions addObject:endCluster];
-	
-	return [transactions autorelease];
-}
-
-- (NSMutableArray *)buddyOperationsForAdd:(AIMBuddy *)buddy toGroup:(AIMGroup *)group {
-	AIMFeedbagItem * groupItem = [group feedbagItem];
-	AIMFeedbagItem * buddyItem = [[[AIMFeedbagItem alloc] init] autorelease];
-	[buddyItem setItemName:[buddy username]];
-	[buddyItem setGroupID:[groupItem groupID]];
-	[buddyItem setItemID:[feedbag randomItemID]];
-	[buddyItem setClassID:FEEDBAG_BUDDY];
-	if (!groupItem || !buddyItem) return nil;
-	if (![buddyItem itemID]) return nil;
-	
-	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
-	AIMFeedbagTransaction * insertTransaction = [[[AIMFeedbagTransaction alloc] initInsert:buddyItem] autorelease];
-	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:groupItem addingItemID:[buddyItem itemID]] autorelease];
-	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
-	
-	NSMutableArray * transactions = [[NSMutableArray alloc] init];
-	[transactions addObject:startCluster];
-	[transactions addObject:insertTransaction];
-	[transactions addObject:updateTransaction];
-	[transactions addObject:endCluster];
-	
-	return [transactions autorelease];
-}
-
-- (NSMutableArray *)buddyOperationsForAddGroup:(AIMGroup *)group {
-	AIMFeedbagItem * rootGroup = [feedbag rootGroup];
-	AIMFeedbagItem * groupItem = [[[AIMFeedbagItem alloc] init] autorelease];
-	[groupItem setItemName:[group name]];
-	[groupItem setGroupID:[feedbag randomGroupID]];
-	[groupItem setItemID:0];
-	[groupItem setClassID:FEEDBAG_GROUP];
-	
-	TLV * attributes = [[TLV alloc] initWithType:FEEDBAG_ATTRIBUTE_ORDER data:[NSData data]];
-	groupItem.attributes = [NSArray arrayWithObject:attributes];
-	[attributes release];
-	
-	if (!rootGroup || !groupItem) return nil;
-	if (![groupItem groupID]) return nil;
-	
-	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
-	AIMFeedbagTransaction * insertTransaction = [[[AIMFeedbagTransaction alloc] initInsert:groupItem] autorelease];
-	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:rootGroup addingItemID:[groupItem groupID]] autorelease];
-	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
-	
-	NSMutableArray * transactions = [[NSMutableArray alloc] init];
-	[transactions addObject:startCluster];
-	[transactions addObject:insertTransaction];
-	[transactions addObject:updateTransaction];
-	[transactions addObject:endCluster];
-	
-	return [transactions autorelease];
-}
-
-- (NSMutableArray *)buddyOperationsForRemoveGroup:(AIMGroup *)group {
-	AIMFeedbagItem * rootGroup = [feedbag rootGroup];
-	AIMFeedbagItem * groupItem = [group feedbagItem];
-	if (!rootGroup || !groupItem) return nil;
-	
-	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
-	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:rootGroup removingItemID:[groupItem groupID]] autorelease];
-	AIMFeedbagTransaction * deleteTransaction = [[[AIMFeedbagTransaction alloc] initDelete:groupItem] autorelease];
-	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
-	
-	NSMutableArray * transactions = [[NSMutableArray alloc] init];
-	[transactions addObject:startCluster];
-	[transactions addObject:updateTransaction];
-	[transactions addObject:deleteTransaction];
-	[transactions addObject:endCluster];
-	
-	return [transactions autorelease];
-}
+#pragma mark Buddy Operations
 
 - (NSMutableArray *)buddyOperationsForSetPDMode:(UInt32)pdMode {
 	if (![feedbag pdInfoItem]) {
@@ -415,6 +330,102 @@
 	}
 }
 
+- (NSMutableArray *)buddyOperationsForRemove:(AIMBuddy *)buddy {
+	AIMFeedbagItem * groupItem = [[buddy group] feedbagItem];
+	AIMFeedbagItem * buddyItem = [buddy feedbagItem];
+	if (!groupItem || !buddyItem) return nil;
+	
+	AIMFeedbagItem * recentGroup = nil;
+	if ([AIMGroup isGroupRecentBuddy:groupItem]) {
+		recentGroup = [feedbag recentBuddiesOrderItem];
+	}
+	
+	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
+	AIMFeedbagTransaction * updateTransaction2 = nil;
+	updateTransaction2 = [[[AIMFeedbagTransaction alloc] initUpdate:recentGroup removingItemID:[buddyItem itemID]] autorelease];
+	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:groupItem removingItemID:[buddyItem itemID]] autorelease];
+	AIMFeedbagTransaction * deleteTransaction = [[[AIMFeedbagTransaction alloc] initDelete:buddyItem] autorelease];
+	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
+	
+	NSMutableArray * transactions = [[NSMutableArray alloc] init];
+	
+	[transactions addObject:startCluster];
+	[transactions addObject:updateTransaction];
+	if (updateTransaction2) [updateTransaction2 applyToFeedbag:feedbag];
+	[transactions addObject:deleteTransaction];
+	[transactions addObject:endCluster];
+	
+	return [transactions autorelease];
+}
+- (NSMutableArray *)buddyOperationsForAdd:(AIMBuddy *)buddy toGroup:(AIMGroup *)group {
+	AIMFeedbagItem * groupItem = [group feedbagItem];
+	AIMFeedbagItem * buddyItem = [[[AIMFeedbagItem alloc] init] autorelease];
+	[buddyItem setItemName:[buddy username]];
+	[buddyItem setGroupID:[groupItem groupID]];
+	[buddyItem setItemID:[feedbag randomItemID]];
+	[buddyItem setClassID:FEEDBAG_BUDDY];
+	if (!groupItem || !buddyItem) return nil;
+	if (![buddyItem itemID]) return nil;
+	
+	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
+	AIMFeedbagTransaction * insertTransaction = [[[AIMFeedbagTransaction alloc] initInsert:buddyItem] autorelease];
+	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:groupItem addingItemID:[buddyItem itemID]] autorelease];
+	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
+	
+	NSMutableArray * transactions = [[NSMutableArray alloc] init];
+	[transactions addObject:startCluster];
+	[transactions addObject:insertTransaction];
+	[transactions addObject:updateTransaction];
+	[transactions addObject:endCluster];
+	
+	return [transactions autorelease];
+}
+- (NSMutableArray *)buddyOperationsForAddGroup:(AIMGroup *)group {
+	AIMFeedbagItem * rootGroup = [feedbag rootGroup];
+	AIMFeedbagItem * groupItem = [[[AIMFeedbagItem alloc] init] autorelease];
+	[groupItem setItemName:[group name]];
+	[groupItem setGroupID:[feedbag randomGroupID]];
+	[groupItem setItemID:0];
+	[groupItem setClassID:FEEDBAG_GROUP];
+	
+	TLV * attributes = [[TLV alloc] initWithType:FEEDBAG_ATTRIBUTE_ORDER data:[NSData data]];
+	groupItem.attributes = [NSArray arrayWithObject:attributes];
+	[attributes release];
+	
+	if (!rootGroup || !groupItem) return nil;
+	if (![groupItem groupID]) return nil;
+	
+	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
+	AIMFeedbagTransaction * insertTransaction = [[[AIMFeedbagTransaction alloc] initInsert:groupItem] autorelease];
+	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:rootGroup addingItemID:[groupItem groupID]] autorelease];
+	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
+	
+	NSMutableArray * transactions = [[NSMutableArray alloc] init];
+	[transactions addObject:startCluster];
+	[transactions addObject:insertTransaction];
+	[transactions addObject:updateTransaction];
+	[transactions addObject:endCluster];
+	
+	return [transactions autorelease];
+}
+- (NSMutableArray *)buddyOperationsForRemoveGroup:(AIMGroup *)group {
+	AIMFeedbagItem * rootGroup = [feedbag rootGroup];
+	AIMFeedbagItem * groupItem = [group feedbagItem];
+	if (!rootGroup || !groupItem) return nil;
+	
+	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
+	AIMFeedbagTransaction * updateTransaction = [[[AIMFeedbagTransaction alloc] initUpdate:rootGroup removingItemID:[groupItem groupID]] autorelease];
+	AIMFeedbagTransaction * deleteTransaction = [[[AIMFeedbagTransaction alloc] initDelete:groupItem] autorelease];
+	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
+	
+	NSMutableArray * transactions = [[NSMutableArray alloc] init];
+	[transactions addObject:startCluster];
+	[transactions addObject:updateTransaction];
+	[transactions addObject:deleteTransaction];
+	[transactions addObject:endCluster];
+	
+	return [transactions autorelease];
+}
 - (NSMutableArray *)buddyOperationsForRemoveDeny:(NSString *)denyUsername {
 	AIMFeedbagItem * removeDeny = nil;
 	for (AIMFeedbagItem * item in feedbag.items) {
@@ -425,17 +436,16 @@
 	}
 	if (!removeDeny) return nil;
 	
-	AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
+	// AIMFeedbagTransaction * startCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:YES] autorelease];
 	AIMFeedbagTransaction * deleteTransaction = [[[AIMFeedbagTransaction alloc] initDelete:removeDeny] autorelease];
-	AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
+	// AIMFeedbagTransaction * endCluster = [[[AIMFeedbagTransaction alloc] initClusterStarting:NO] autorelease];
 	NSMutableArray * transactions = [[NSMutableArray alloc] init];
-	[transactions addObject:startCluster];
+	// [transactions addObject:startCluster];
 	[transactions addObject:deleteTransaction];
-	[transactions addObject:endCluster];
+	// [transactions addObject:endCluster];
 	
 	return [transactions autorelease];
 }
-
 - (NSMutableArray *)buddyOperationsForAddDeny:(NSString *)denyUsername {
 	AIMFeedbagItem * denyExisting = nil;
 	for (AIMFeedbagItem * item in feedbag.items) {
@@ -490,66 +500,11 @@
 	return flag;
 }
 
-- (BOOL)removeBuddy:(AIMBuddy *)buddy {
-	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
-	operation.operationType = kAIMFeedbagOperationRemoveBuddy;
-	operation.buddyName = [buddy username];
-	BOOL flag = [self pushOperation:operation];
-	[operation release];
-	return flag;
-}
-
-- (BOOL)addBuddy:(AIMBuddy *)buddy toGroup:(AIMGroup *)group {
-	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
-	operation.operationType = kAIMFeedbagOperationAddBuddy;
-	operation.buddyName = [buddy username];
-	operation.groupName = [group name];
-	BOOL flag = [self pushOperation:operation];
-	[operation release];
-	return flag;
-}
-
-- (BOOL)addGroup:(AIMGroup *)group {
-	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
-	operation.operationType = kAIMFeedbagOperationAddGroup;
-	operation.groupName = [group name];
-	BOOL flag = [self pushOperation:operation];
-	[operation release];
-	return flag;
-}
-
-- (BOOL)removeGroup:(AIMGroup *)group {
-	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
-	operation.operationType = kAIMFeedbagOperationRemoveGroup;
-	operation.groupName = [group name];
-	BOOL flag = [self pushOperation:operation];
-	[operation release];
-	return flag;
-}
-
 - (BOOL)setPDMode:(UInt8)pdMode {
 	NSLog(@"Set PD Mode.");
 	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
 	operation.operationType = kAIMFeedbagOperationSetPDMode;
 	operation.integerMode = pdMode;
-	BOOL flag = [self pushOperation:operation];
-	[operation release];
-	return flag;
-}
-
-- (BOOL)addDenyUser:(NSString *)denyUsername {
-	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
-	operation.operationType = kAIMFeedbagOperationAddDeny;
-	operation.buddyName = denyUsername;
-	BOOL flag = [self pushOperation:operation];
-	[operation release];
-	return flag;
-}
-
-- (BOOL)removeDenyUser:(NSString *)denyUsername {
-	AIMFeedbagOperation * operation = [[AIMFeedbagOperation alloc] init];
-	operation.operationType = kAIMFeedbagOperationRemoveDeny;
-	operation.buddyName = denyUsername;
 	BOOL flag = [self pushOperation:operation];
 	[operation release];
 	return flag;
